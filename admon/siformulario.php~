@@ -1,0 +1,105 @@
+<?php
+/*
+	Formulario de registro y modificación de sistemas de información
+	Presenta un formulario para el registro o modificación de sistemas de información:
+	$accion=Adicionar, Modificar
+	$codigo: requerido cuando acción=Modificar y contiene el código del sistema de infromación a modificar
+	Autor: Galo Fabián Muñoz Espín
+	Fecha de creación: 12-2010
+	Ultima modificación: 
+*/
+	if (!session_is_registered('Usuario'))
+	{
+?>
+	<script language="Javascript">
+		window.alert('Acceso no autorizado');
+		window.location='index.php';
+	</script>
+<?php
+	}
+	foreach($_GET as $variable => $valor) ${$variable}=$valor;
+	if ($accion=='Modificar')
+	{
+		//recuperar los datos de la base de datos
+		include('funciones/conexion.inc.php');
+		$cadenaSQL="select nombre, descripcion, version, codnivelauditoria, css from admon_si where codigo='$codigo'";
+		$consulta=pg_query($conexion,$cadenaSQL);
+		$nombre=pg_result($consulta,0,'nombre');
+		$descripcion=pg_result($consulta,0,'descripcion');
+		$version=pg_result($consulta,0,'version');
+		$codnivelauditoria=pg_result($consulta,0,'codnivelauditoria');
+		$seleccion0='';
+		$seleccion1='';
+		$seleccion2='';
+		$seleccion3='';
+		switch($codnivelauditoria)
+		{
+			case '0': $seleccion0='selected';break;
+			case '1': $seleccion1='selected';break;
+			case '2': $seleccion2='selected';break;
+			case '3': $seleccion3='selected';break;
+		}
+		$css=pg_result($consulta,0,'css');
+		pg_close($conexion);
+	}
+	else
+	{
+		//iniciarlizar variables
+		$nombre='';
+		$descripcion='';
+		$version='';
+		$codnivelauditoria='';
+		$css='';
+	}
+?>
+<script language=javascript>
+	function validar()
+	{
+		if (validarNoVacio(window.document.si.nombre,"el nombre del sistema de información")) window.document.si.submit();
+	}
+</script>
+<center>
+<h3>ADICION DE SISTEMAS DE INFORMACIÓN</h3>
+<form name="si" method="POST" action="principal.php?archivo=admon/siactualizar.php">
+<table>
+<?php
+	if ($accion=='Modificar')
+	{
+?>
+	<TR>
+		<TD>C&oacute;digo</TD>
+		<td><input type=text name=codigo value="<?php echo $codigo;?>" readonly="true"></td>
+	</TR>	
+<?php
+	}
+?>
+	<TR>
+		<TD>Sistema de informaci&oacute;n (*)</TD>
+		<td><input type=text name=nombre maxlength=100 size=50 value="<?php echo $nombre;?>"></td>
+	</TR>
+	<tr>
+		<TD>Descripci&oacute;n</TD><td><textarea name=descripcion cols="50" rows="3"><?php echo $descripcion;?></textarea></TD>
+	</tr>
+	<tr>
+		<TD>Version</TD>
+		<TD><input type=text name=version maxlength="5" size="6" value="<?php echo $version;?>"></TD>
+	</tr>
+	<tr>
+		<TD>Nivel de auditoria</TD>
+		<TD>
+			<select name="codnivelauditoria">
+				<option value="0" <?php echo $seleccion0;?>> Sin auditoria</option>
+				<option value="1" <?php echo $seleccion1;?>> Bajo (Solo accesos)</option>
+				<option value="2" <?php echo $seleccion2;?>> Medio (Accesos + modificaciones)</option>
+				<option value="3" <?php echo $seleccion3;?>> Alto (Accesos + modificaciones + consultas)</option>
+			</select>	
+		</TD>
+	</tr>
+	<tr>
+		<TD>Hoja de estilo</TD>
+		<TD><input type=text name=css maxlength="250" size="50" value="<?php echo $css;?>"></TD>
+	</tr>
+</table>
+<input type="submit" name=accion value=<?php echo $accion?>>
+</form>
+</center>

@@ -1,0 +1,38 @@
+<?php
+/*
+	Reporte de errores y sugerencias de mejora
+	Presenta un listado de las sugerencias de mejora y errores reportados por los usuarios del sistema de información. En esta página es posible hacer los cambios de estados de por analizar a analizados viables o analizados no viables, de analizados viables a desarrollado.
+	Autor: Galo Fabián Muñoz Espín
+	Fecha de creación: 02-2011
+	Ultima modificación: 03-03-2011 Actualización de comentarios
+*/
+
+	if (!session_is_registered('Usuario'))
+	{
+?>
+	<script language="Javascript">
+		window.alert('Acceso no autorizado');
+		window.location='index.php';
+	</script>
+<?php
+	}
+?>
+<center>
+<h3>ROLLES</h3>
+<table border="1">
+<TR><Th>Código</Th><Th>Roll</Th><Th>Descripción</Th><th><a href=principal.php?archivo=admon/rollesFormulario.php&accion=Adicionar>+</a></th></TR>
+<?php
+	include('funciones/conexion.inc.php');
+	$cadenaSQL='select * from admon_rolles order by codigo';
+	$consulta=pg_query($conexion,$cadenaSQL);
+	for ($i=0; $i<pg_num_rows($consulta);$i++)
+	{
+		$codigo=pg_result($consulta,$i,'codigo');
+		$roll=pg_result($consulta,$i,'roll');
+		$descripcion=pg_result($consulta,$i,'descripcion');
+		echo "<TR><TD>$codigo</TD><TD>$roll</TD><TD>$descripcion&nbsp;</TD><td><a href=principal.php?archivo=admon/rollesFormulario.php&accion=Modificar&codigo=$codigo> / </a> <a href=principal.php?archivo=admon/rollesActualizar.php&accion=Eliminar&codigo=$codigo>X</a> <a href=principal.php?archivo=admon/rollesOpciones.php&codroll=$codigo>P</a></td></TR>";	
+	}
+	pg_close($conexion);
+?>
+</table>
+</center>

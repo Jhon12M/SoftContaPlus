@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="presentacion/css/estilo.css">
+		<title>Administrador de sistemas de información</title></head>
+		</head>
+	<body>
+	<div id="banner">
+	</div>
+	<div id="menu">
+		M E N U<p>
+		<?php include('menu.php');?>
+		<a href="index.php">Salir</a>
+	</div>
+	<div id="contenido">
+<?php
+	include($_GET['archivo']);
+?>
+	</div>
+</body>
+</html>
