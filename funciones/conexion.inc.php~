@@ -1,0 +1,10 @@
+<?php
+	$BaseDeDatos='admon';
+	$UsuarioBD='galo';
+	@$conexion=pg_connect("dbname=$BaseDeDatos user=$UsuarioBD");
+	if(!$conexion) 
+	{
+		echo "No se puede conectar con la base de datos";
+		die();
+	}
+?>
